@@ -246,11 +246,17 @@ def update_graph(Region):
 
 @callback(
     Output("sales-between-dates", "figure"),
-    [Input("date-range", "start_date"), Input("date-range", "end_date")],
+    [
+        Input("date-range", "start_date"),
+        Input("date-range", "end_date"),
+        Input("product_dropdown", "value"),
+    ],
 )
-def update_sales_between_dates(start_date, end_date):
+def update_sales_between_dates(start_date, end_date, product_dropdown):
     filtered_df = full_df[
-        (full_df["date"] >= start_date) & (full_df["date"] <= end_date)
+        (full_df["date"] >= start_date)
+        & (full_df["date"] <= end_date)
+        & (full_df["product"] == product_dropdown)
     ]
     fig = px.line(
         filtered_df, x="date", y="sales", labels={"date": "Date", "sales": "Sales"}
@@ -286,25 +292,33 @@ def product_price_trend(product_dropdown):
         Output("avg-sales-day-tile", "children"),
         Output("avg-sales-growth-tile", "children"),
     ],
-    [Input("date-range", "start_date"), Input("date-range", "end_date")],
+    [
+        Input("date-range", "start_date"),
+        Input("date-range", "end_date"),
+        Input("product_dropdown", "value"),
+    ],
 )
-def number_tiles(start_date, end_date):
+def number_tiles(start_date, end_date, product_dropdown):
     filtered_data = full_df[
-        (full_df["date"] >= start_date) & (full_df["date"] <= end_date)
+        (full_df["date"] >= start_date)
+        & (full_df["date"] <= end_date)
+        & (full_df["product"] == product_dropdown)
     ]
     total_sales = filtered_data["sales"].sum()
     max_sales_per_day = filtered_data["sales"].max()
     average_sales_per_day = filtered_data["sales"].mean()
 
     if len(filtered_data) > 1:
-        sales_growth = (
-            (filtered_data["sales"].iloc[-1] - filtered_data["sales"].iloc[0])
-            / filtered_data["sales"].iloc[0]
-            * 100
-        )
+        end_sales_fig = filtered_data["sales"].iloc[-1]
+        start_sales_fig = filtered_data["sales"].iloc[0]
+        divisor = max(end_sales_fig, start_sales_fig)
+        sales_growth = abs(end_sales_fig - start_sales_fig) * 100 / divisor
+        print(sales_growth)
+
     else:
         sales_growth = 0
 
+    print(filtered_data["sales"].iloc[-1], filtered_data["sales"].iloc[0])
     return (
         f"Total Sales: {total_sales:.2f}",
         f"Max Sales/Day: {max_sales_per_day:.2f}",
