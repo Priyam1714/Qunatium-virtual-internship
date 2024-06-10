@@ -7,6 +7,11 @@
     align-items: center;
 }
 
+body {
+    background: linear-gradient(180deg, #000000, #1a1a1a);
+}
+
+
 .banner h1{
     color:white;
     padding-top: 0px;
@@ -25,4 +30,42 @@
 .banner-radio {
     font-size: 30px;
     margin : 2px -1px 0px;
+}
+
+.number-tile {
+    background-color: #9EA9B1;
+    color: white;
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 5px;
+    width: 20%;
+}
+
+.number-tiles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* Increase gap between tiles */
+    justify-content: center;
+    margin-left: 15px;
+}
+
+.tile {
+    background-color: #303937;
+    color:white;
+    padding: 40px; /* Increase padding */
+    text-align: center;
+    font-size: 40px; /* Increase font size */
+    border-radius: 5px;
+    height: 140px; /* Adjust height */
+    width: 280px;  /* Adjust width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.date-picker {
+    width: 100%;
+    max-width: 250px;  /* Adjust to match the width of the product dropdown */
 }

@@ -1,0 +1,9 @@
+.date-picker-container {
+    display: flex;
+    justify-content: center;
+}
+
+.date-picker {
+    width: 100%;
+    max-width: 250px;  /* Adjust to match the width of the product dropdown */
+}

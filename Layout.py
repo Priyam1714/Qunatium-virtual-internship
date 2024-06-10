@@ -43,7 +43,7 @@ app = Dash(__name__)
 
 app.layout = html.Div([  
     html.Div([     
-        html.H1('Pink Morsel Sales Graph',style={'textAlign':'center',
+        html.H1('MORSEL SALES REPORT',style={'textAlign':'center',
                                                  "background-color":colors["secondary"],
                                                  'margin':'0',
                                                  'flex':'1',
@@ -58,6 +58,9 @@ app.layout = html.Div([
             ],className="banner"),
 
     html.Div([
+        html.H2("Pink Morsel Sales by Region",style={'textAlign':'center',
+                                                    'background-color':colors["secondary"],
+                                                    }),
         dcc.RadioItems(regions,
                      'Regions',
                      id='Region',style={'textAlign':'left',
@@ -79,7 +82,8 @@ app.layout = html.Div([
         html.Div([
             html.Div([
                 html.Div([
-                    html.H2("Product Sales Distribution",style={'textAlign':'center','background-color':colors["secondary"]}),
+                    html.H2("Product Sales Distribution",style={'textAlign':'center',
+                                                                'background-color':colors["secondary"]}),
                     dcc.Dropdown(options=option,value='gold-morsel',id='product_dropdown'),
                     dcc.Graph(id='product-sales-pie',figure=pie_chart_fig)
                 ])
@@ -87,23 +91,39 @@ app.layout = html.Div([
 
             html.Div([
                     html.H2("Sales Between Duration",style={'textAlign':'center','background-color':colors["secondary"]}),
+
+            html.Div([
                     dcc.DatePickerRange(id='date-range',
                                         min_date_allowed=full_df['date'].min(),
                                         max_date_allowed=full_df['date'].max(),
                                         start_date=full_df['date'].min(),
                                         end_date=full_df['date'].max(),
-                                        style={'font-size': '9px'}),
+                                        style={'size': '1px'}),
+            ]),
                     dcc.Graph(id='sales-between-dates')
                 ], style={'width': '50%', 'display': 'inline-block', 'verticalAlign': 'top'})
             ],style={'width': '100%', 'display': 'inline-block','align':'left'}),
 
 # for sales trend graph
+    # for sales trend graph
+    html.Div([
         html.Div([
+            html.H2("Product Price Trend", style={'textAlign': 'center', 'background-color': colors["secondary"]}),
+            dcc.Graph(id='product_price_trend'),
+        ], style={'width': '50%', 'display': 'inline-block', 'vertical-align': 'top'}),
+    
+        html.Div([
+            html.H2("Sales Summary B/w Duration", style={'textAlign': 'center', 'background-color': colors["secondary"]}),
             html.Div([
-                html.H2("Product Price Trend",style={'textAlign':'center','background-color':colors["secondary"]}),
-                dcc.Graph(id='product_price_trend')
-            ],style={'width': '50%', 'display': 'inline-block','vertical-align':'top'})
-            ])
+                html.Div(id='total-sales-tile', className='tile'),
+                html.Div(id='max-sales-day-tile', className='tile'),
+                html.Div(id='avg-sales-day-tile', className='tile'),
+                html.Div(id='avg-sales-growth-tile', className='tile')
+            ], className='number-tiles-grid')
+        ], style={'width': '50%', 'display': 'inline-block', 'vertical-align': 'top'})
+    ], style={'display': 'flex'})
+
+
 
 ])
 
@@ -156,16 +176,57 @@ def product_price_trend(product_dropdown):
         product_sales = full_df.loc[full_df['product']==product_dropdown]
     fig = px.line(product_sales,x='date',y='price',labels={'date':'Date','price':'Price'})
     fig.update_layout(
-    plot_bgcolor=colors["secondary"],
-    paper_bgcolor=colors["primary"],
-    font_color=colors["white"],
-     )
+        plot_bgcolor=colors["secondary"],
+        paper_bgcolor=colors["primary"],
+        font_color="white",
+         )
     return fig
 
+
+@callback(
+    [
+        Output('total-sales-tile', 'children'),
+        Output('max-sales-day-tile', 'children'),
+        Output('avg-sales-day-tile', 'children'),
+        Output('avg-sales-growth-tile', 'children')
+    ],
+    [
+        Input('date-range', 'start_date'),
+        Input('date-range', 'end_date')
+    ]
+)
+
+
+def number_tiles(start_date,end_date):
+    filtered_data = full_df[(full_df['date']>=start_date) & (full_df['date']<=end_date)]
+    total_sales = filtered_data['sales'].sum()
+    max_sales_per_day = filtered_data['sales'].max()
+    average_sales_per_day = filtered_data['sales'].mean()
+
+    if len(filtered_data) > 1:
+        sales_growth = (filtered_data['sales'].iloc[-1] - filtered_data['sales'].iloc[0]) / filtered_data['sales'].iloc[0] * 100
+    else:
+        sales_growth = 0
+
+    return(
+        f"Total Sales: {total_sales:.2f}",
+        f"Max Sales/Day: {max_sales_per_day:.2f}",
+        f"Avg Sales/Day: {average_sales_per_day:.2f}",
+        f'Sales Diff: {sales_growth:.2f}%'
+    )        
 
 app.css.append_css({
     "external_url":"https://codepen.io/chriddyp/pen/bWLwgP.css"
 })
+
+app.css.append_css({
+    "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
+})
+
+app.css.append_css({
+    "external_url": "https://codepen.io/chriddyp/pen/brPBPO.css"
+})
+
 
 if __name__ == '__main__':
     app.run(debug=True) 
