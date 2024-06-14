@@ -33,14 +33,22 @@ jobs:
     needs: build
 
     steps:
-      - name: Deploy to EC2
+      - name: Deploy Docker image to EC2
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'your-aws-region'
-          INSTANCE_ID: 'your-ec2-instance-id'
-          DOCKER_IMAGE: 'priyamchandra/my-dash-app:latest'
         run: |
-            docker login -u AWS -p $AWS_SECRET_ACCESS_KEY https://aws-account-id.dkr.ecr.your-region.amazonaws.com
-            docker pull aws-account-id.dkr.ecr.your-region.amazonaws.com/your-docker-image:latest
-            docker run -d -p 80:80 aws-account-id.dkr.ecr.your-region.amazonaws.com/your-docker-image:latest
+          # Log in to Docker Hub (if private repository)
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+          # Pull the Docker image from Docker Hub
+          docker pull priyamchandra/my-dash-app:latest
+
+          # Stop the currently running container (if any)
+          docker stop my-dash-app || true
+          
+          # Remove the existing container (if any)
+          docker rm my-dash-app || true
+
+          # Run the Docker container
+          docker run -d -p 8050:8050 --name my-dash-app priyamchandra/my-dash-app:latest
