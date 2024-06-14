@@ -45,10 +45,10 @@ jobs:
           docker pull priyamchandra/my-dash-app:latest
 
           # Stop the currently running container (if any)
-          docker stop my-dash-app || true
+          docker stop practical_merkle || true
           
           # Remove the existing container (if any)
-          docker rm my-dash-app || true
+          docker rm practical_merkle || true
 
           # Run the Docker container
           docker run -d -p 8050:8050 --name practical_merkle priyamchandra/my-dash-app:latest
