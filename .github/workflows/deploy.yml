@@ -40,10 +40,7 @@ jobs:
         AWS_REGION: 'your-aws-region'
         INSTANCE_ID: 'your-ec2-instance-id'
         DOCKER_IMAGE: 'priyamchandra/my-dash-app:latest'
-      run: |
-        ssh -o StrictHostKeyChecking=no -i "Docker_key.pem" ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-          docker pull priyamchandra/my-dash-app:latest
-          docker stop my-dash-app || true
-          docker rm my-dash-app || true
-          docker run -d -p 8050:8050 --name my-dash-app priyamchandra/my-dash-app:latest
-        EOF
+      script: |
+          docker login -u AWS -p $AWS_SECRET_ACCESS_KEY https://aws-account-id.dkr.ecr.your-region.amazonaws.com
+          docker pull aws-account-id.dkr.ecr.your-region.amazonaws.com/your-docker-image:latest
+          docker run -d -p 80:80 aws-account-id.dkr.ecr.your-region.amazonaws.com/your-docker-image:latest
