@@ -240,7 +240,7 @@ def update_graph(Region):
     )
     fig.update_xaxes(color="white")
     fig.update_yaxes(color="white")
-    # fig.update_traces(line_color='#25DAB0')
+    fig.update_traces(line_color='#2BDB3D')
     return fig
 
 
