@@ -48,8 +48,8 @@ jobs:
             docker pull priyamchandra/my-dash-app:latest
             
             # Stop and remove the existing container (if any)
-            docker stop practical_merkle || true
-            docker rm practical_merkle || true
+            docker stop $(docker ps -qa)
+            docker rm $(docker ps -qa)
             
             # Run the new Docker container and capture its ID
             CONTAINER_ID=$(docker run -d -p 8050:8050 priyamchandra/my-dash-app:latest)
