@@ -38,19 +38,17 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          # SSH into your EC2 instance
-          ssh -o StrictHostKeyChecking=no ec2-user@16.171.41.101 << 'EOF'
+          # Log in to Docker Hub (if private repository)
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+          # Pull the Docker image from Docker Hub
+          docker pull priyamchandra/my-dash-app:latest
 
           # Stop the currently running container (if any)
-          docker stop practical_merkle || true
+          docker stop my-dash-app || true
           
           # Remove the existing container (if any)
-          docker rm practical_merkle || true
-
-          # Pull the latest Docker image from Docker Hub
-          docker pull priyamchandra/my-dash-app:latest
+          docker rm my-dash-app || true
 
           # Run the Docker container
           docker run -d -p 8050:8050 --name practical_merkle priyamchandra/my-dash-app:latest
-
-          EOF
