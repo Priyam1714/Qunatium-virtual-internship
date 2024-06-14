@@ -47,7 +47,7 @@ app.layout = html.Div(
         html.Div(
             [
                 html.H1(
-                    "MORSEL SALES REPORT V4(CI/CD Pipeline Support)",
+                    "MORSEL SALES REPORT(CI/CD Support)",
                     style={
                         "textAlign": "center",
                         "background-color": colors["secondary"],
