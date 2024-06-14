@@ -230,7 +230,7 @@ def update_graph(Region):
         Regional_data,
         x="date",
         y="sales",
-        hover_data="sales",
+        hover_data=["date", "sales"],
         labels={"date": "Date", "sales": "Sales"},
     )
     fig.update_layout(
@@ -333,4 +333,4 @@ app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/brPBPO.css"
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run_server(host='0.0.0.0',debug=True)
